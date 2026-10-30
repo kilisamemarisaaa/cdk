@@ -3,7 +3,7 @@
 🚀 Linux Do 社区 CDK (Content Distribution Kit) 快速分享平台
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go Version](https://img.shields.io/badge/Go-1.24-blue.svg)](https://golang.org/)
+[![Go Version](https://img.shields.io/badge/Go-1.26.10-blue.svg)](https://golang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
 
@@ -50,7 +50,7 @@ LINUX DO CDK 是一个为 Linux Do 社区打造的内容分发工具平台，旨
 ## 🛠️ 技术栈
 
 ### 后端
-- **[Go 1.24](https://go.dev/doc)** - 主要开发语言
+- **[Go 1.26.10](https://go.dev/doc)** - 主要开发语言
 - **[Gin](https://github.com/gin-gonic/gin)** - Web 框架
 - **[GORM](https://github.com/go-gorm/gorm)** - ORM 框架
 - **[Redis](https://github.com/redis/redis)** - 缓存和会话存储
@@ -68,8 +68,8 @@ LINUX DO CDK 是一个为 Linux Do 社区打造的内容分发工具平台，旨
 
 ## 📋 环境要求
 
-- **Go** >= 1.24
-- **Node.js** >= 18.0
+- **Go** 1.26.10
+- **Node.js** 24.22.1
 - **MySQL** >= 8.0
 - **Redis** >= 6.0
 - **pnpm** >= 8.0 (推荐)
@@ -141,6 +141,7 @@ pnpm dev
 | 配置项 | 说明 | 示例 |
 |--------|------|------|
 | `app.addr` | 后端服务监听地址 | `:8000` |
+| `app.user_whitelist` | 允许访问的 LINUX DO 用户名；未配置或为空时不限制 | `["alice", "bob"]` |
 | `worker.port` | Worker 探针端口 | `8001` |
 | `schedule.port` | Beat/Scheduler 探针端口 | `8002` |
 | `oauth2.client_id` | OAuth2 客户端 ID | `your_client_id` |
@@ -148,6 +149,8 @@ pnpm dev
 | `redis.host` | Redis 服务器地址 | `127.0.0.1` |
 
 详细配置说明请参考 `config.example.yaml` 文件。
+
+在 `config.yaml` 中设置非空的 `app.user_whitelist` 并重启服务后，使用 `LoginRequired` 中间件的接口仅允许白名单用户访问（包括已有会话）；其他已登录用户返回 HTTP 403。用户名必须完全一致，区分大小写，首尾空格也参与匹配。
 
 ## 🔧 开发指南
 

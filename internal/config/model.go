@@ -24,6 +24,8 @@
 
 package config
 
+import "slices"
+
 import "time"
 
 type configModel struct {
@@ -44,16 +46,25 @@ type configModel struct {
 
 // appConfig 应用基本配置
 type appConfig struct {
-	AppName           string `mapstructure:"app_name"`
-	Env               string `mapstructure:"env"`
-	Addr              string `mapstructure:"addr"`
-	APIPrefix         string `mapstructure:"api_prefix"`
-	SessionCookieName string `mapstructure:"session_cookie_name"`
-	SessionSecret     string `mapstructure:"session_secret"`
-	SessionDomain     string `mapstructure:"session_domain"`
-	SessionAge        int    `mapstructure:"session_age"`
-	SessionHttpOnly   bool   `mapstructure:"session_http_only"`
-	SessionSecure     bool   `mapstructure:"session_secure"`
+	AppName           string   `mapstructure:"app_name"`
+	Env               string   `mapstructure:"env"`
+	Addr              string   `mapstructure:"addr"`
+	APIPrefix         string   `mapstructure:"api_prefix"`
+	SessionCookieName string   `mapstructure:"session_cookie_name"`
+	SessionSecret     string   `mapstructure:"session_secret"`
+	SessionDomain     string   `mapstructure:"session_domain"`
+	SessionAge        int      `mapstructure:"session_age"`
+	SessionHttpOnly   bool     `mapstructure:"session_http_only"`
+	SessionSecure     bool     `mapstructure:"session_secure"`
+	UserWhitelist     []string `mapstructure:"user_whitelist"`
+}
+
+// IsUserAllowed 检查用户名是否允许访问，未配置白名单时不限制访问。
+func (a *appConfig) IsUserAllowed(username string) bool {
+	if len(a.UserWhitelist) == 0 {
+		return true
+	}
+	return slices.Contains(a.UserWhitelist, username)
 }
 
 // projectAppConfig 项目相关配置
@@ -139,6 +150,7 @@ type scheduleConfig struct {
 	UpdateUserBadgeScoresTaskCron         string `mapstructure:"update_user_badges_scores_task_cron"`
 	UpdateAllBadgesTaskCron               string `mapstructure:"update_all_badges_task_cron"`
 	ExpireStalePaymentOrdersCron          string `mapstructure:"expire_stale_payment_orders_cron"`
+	UpdateDashboardStatsCron              string `mapstructure:"update_dashboard_stats_cron"`
 }
 
 // workerConfig 工作配置
